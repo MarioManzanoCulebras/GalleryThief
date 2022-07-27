@@ -31,7 +31,10 @@ fun ItemsListScreen(
     listState: LazyListState,
 ) {
     if (error != null && !loading && (items == null || items.isEmpty())) {
-        ErrorMessage(error = error, onRefresh)
+        if (error is Error.NoData ) ErrorMessage(error = error) else ErrorMessage(
+            error = error,
+            onRefresh
+        )
     } else {
             GalleryItemsList(
                 loading = loading,

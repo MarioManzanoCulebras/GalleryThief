@@ -13,10 +13,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -49,24 +46,36 @@ fun HomeScreen(appState: GalleryThiefAppState) {
 
     Scaffold(
         scaffoldState = appState.scaffoldState,
+        floatingActionButtonPosition = FabPosition.Center,
         floatingActionButton = {
-            if (enableDownloadButton.value) {
-                Row {
-                    Spacer(modifier = Modifier.weight(1f))
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Spacer(modifier = Modifier.width(24.dp))
                     FloatingActionButton(onClick = {
                         appState.navController.navigate(
-                            NavCommand.ContentTypeByString(Feature.GALLERY)
-                                .createRoute(url.value.ifEmpty { "jsoup.org" })
+                            NavCommand.ContentTypeByString(Feature.GALLERY).createRoute(" ")
                         )
                     }) {
-                        Image(
-                            painter = painterResource(ThiefIcon.ThiefGallery.resourceId),
-                            contentDescription = "Gallery",
-                            colorFilter = ColorFilter.tint(Color.White)
+                        Icon(
+                            imageVector = Icons.Default.FolderOpen,
+                            contentDescription = "Gallery"
                         )
                     }
-                    Spacer(modifier = Modifier.width(12.dp))
-                }
+                    Spacer(modifier = Modifier.weight(1f))
+                    if (enableDownloadButton.value) {
+                        FloatingActionButton(onClick = {
+                            appState.navController.navigate(
+                                NavCommand.ContentTypeByString(Feature.GALLERY)
+                                    .createRoute(url.value.ifEmpty { "jsoup.org" })
+                            )
+                        }) {
+                            Image(
+                                painter = painterResource(ThiefIcon.ThiefGallery.resourceId),
+                                contentDescription = "ThiefImages",
+                                colorFilter = ColorFilter.tint(Color.Black)
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(24.dp))
+                    }
             }
         }) {
 

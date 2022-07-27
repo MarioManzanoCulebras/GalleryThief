@@ -51,13 +51,13 @@ fun ImageWithLoader(
                 Image(
                     painterResource(ThiefIcon.ThiefAngry.resourceId),
                     contentDescription = "",
-                    contentScale = ContentScale.Crop,
+                    contentScale = ContentScale.Fit,
                     modifier = Modifier
                         .weight(1f)
                         .align(Alignment.CenterHorizontally)
                 )
                 Text(
-                    text = "Image Not Found!",
+                    text = "Error loading!",
                     textAlign = TextAlign.Center,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )

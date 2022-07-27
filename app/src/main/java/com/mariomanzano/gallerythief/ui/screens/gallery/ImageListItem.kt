@@ -18,7 +18,9 @@ fun ImageListItem(
     Column(
         modifier = modifier.padding(8.dp)
     ) {
-        Card {
+        Card(
+            elevation = 12.dp
+        ) {
             Box {
                 ImageWithLoader(urlImage = item.url)
             }

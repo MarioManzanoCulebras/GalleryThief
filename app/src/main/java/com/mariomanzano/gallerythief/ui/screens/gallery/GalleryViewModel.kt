@@ -53,10 +53,12 @@ class GalleryViewModel @Inject constructor(
     }
 
     fun launchTheRobbery() {
-        viewModelScope.launch {
-            _state.update { _state.value.copy(loading = true) }
-            _state.update { _state.value.copy(loading = false, error = stealWebImagesListUseCase(
-                savedStateHandle.get<String>(NavArg.ItemType.key) ?: "")) }
+        val url = savedStateHandle.get<String>(NavArg.ItemType.key) ?: ""
+        if (url.replace(" ".toRegex(),"").isNotEmpty()){
+            viewModelScope.launch {
+                _state.update { _state.value.copy(loading = true) }
+                _state.update { _state.value.copy(loading = false, error = stealWebImagesListUseCase(url)) }
+            }
         }
     }
 
