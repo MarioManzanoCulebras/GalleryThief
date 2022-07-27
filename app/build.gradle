@@ -1,0 +1,108 @@
+import com.mariomanzano.gallerythief.buildsrc.Libs
+
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+}
+
+android {
+    compileSdk 32
+
+    defaultConfig {
+        applicationId "com.mariomanzano.gallerythief"
+        minSdk 26
+        targetSdk 32
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables {
+            useSupportLibrary true
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    buildFeatures {
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion compose_version
+    }
+    packagingOptions {
+        resources {
+            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
+    }
+}
+
+dependencies {
+
+    implementation Libs.AndroidX.coreKtx
+    implementation Libs.AndroidX.appCompat
+    implementation Libs.AndroidX.material
+    implementation Libs.AndroidX.Compose.ui
+    implementation Libs.AndroidX.Compose.material
+    implementation Libs.AndroidX.Compose.tooling
+    implementation Libs.AndroidX.Compose.animation
+    implementation Libs.AndroidX.Compose.materialIcons
+    implementation Libs.AndroidX.Compose.liveData
+    implementation Libs.AndroidX.Compose.navigation
+    implementation Libs.AndroidX.Compose.activity
+    implementation Libs.AndroidX.Room.runtime
+    implementation Libs.AndroidX.Room.ktx
+    kapt Libs.AndroidX.Room.compiler
+    implementation Libs.AndroidX.Lifecycle.runtimeKtx
+
+    implementation Libs.Coil.compose
+
+    implementation Libs.Accompanist.pager
+    implementation Libs.Accompanist.indicators
+    implementation Libs.Accompanist.systemUiController
+    implementation Libs.Accompanist.swipeRefresh
+    implementation Libs.Accompanist.placeHolder
+
+    implementation Libs.Hilt.android
+    kapt Libs.Hilt.compiler
+    implementation Libs.Hilt.navigationCompose
+
+    implementation Libs.OkHttp3.loginInterceptor
+    implementation Libs.Retrofit.retrofit
+    implementation Libs.Retrofit.converterGson
+
+    implementation Libs.Arrow.core
+
+    testImplementation Libs.JUnit.junit
+    testImplementation Libs.Mockito.kotlin
+    testImplementation Libs.Mockito.inline
+    testImplementation Libs.Kotlin.Coroutines.test
+    testImplementation Libs.turbine
+
+    androidTestImplementation Libs.AndroidX.Test.Ext.junit
+    androidTestImplementation Libs.AndroidX.Test.Espresso.contrib
+    androidTestImplementation Libs.AndroidX.Test.runner
+    androidTestImplementation Libs.AndroidX.Test.rules
+    androidTestImplementation Libs.AndroidX.Compose.Test.uiJunit
+    debugImplementation Libs.AndroidX.Compose.Test.tooling
+    debugImplementation Libs.AndroidX.Compose.Test.uiManifest
+    androidTestImplementation Libs.Kotlin.Coroutines.test
+    androidTestImplementation Libs.Hilt.test
+    androidTestImplementation Libs.OkHttp3.mockWebServer
+    kaptAndroidTest Libs.Hilt.compiler
+
+    implementation Libs.Kotlin.Jdk.stdLib
+
+    implementation Libs.Glide.glide
+}
