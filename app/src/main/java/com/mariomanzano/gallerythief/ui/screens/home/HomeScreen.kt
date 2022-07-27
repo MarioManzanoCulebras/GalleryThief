@@ -54,7 +54,7 @@ fun HomeScreen(appState: GalleryThiefAppState) {
                 Row {
                     Spacer(modifier = Modifier.weight(1f))
                     FloatingActionButton(onClick = {
-                        appState.navController.navigatePoppingUpToStartDestination(
+                        appState.navController.navigate(
                             NavCommand.ContentTypeByString(Feature.GALLERY)
                                 .createRoute(url.value.ifEmpty { "jsoup.org" })
                         )

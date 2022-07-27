@@ -6,7 +6,6 @@ import java.util.*
 
 @Entity
 data class DbImage(
-    @PrimaryKey(autoGenerate = true) val id: Int,
-    val fromPageUrl: String,
+    @PrimaryKey
     val url: String
 )

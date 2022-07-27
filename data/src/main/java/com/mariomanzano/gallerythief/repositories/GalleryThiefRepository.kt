@@ -14,18 +14,26 @@ class GalleryThiefRepository @Inject constructor(
 ) {
     val imageList = localDataSource.imageList
 
-    suspend fun stealWebImagesList(url: String): Error? = withContext(Dispatchers.IO) {
+    suspend fun stealWebImagesList(url: String): Error? = withContext(Dispatchers.Default) {
         val parsedUrl = if (!url.startsWith("http://")) "http://$url" else url
         try {
             val list = mutableListOf<ImageItem>()
             val doc = Jsoup.connect(parsedUrl).get()
             val elements = doc.getElementsByTag("img")
             elements.forEach { img ->
-                list.add(ImageItem(
-                    id = 0,
-                    fromPageUrl = parsedUrl,
-                    url = img.absUrl("src")))
+                val imgUrl = img.absUrl("src")
+                val elementFound = list.find {
+                    it.url == imgUrl
+                }
+                if (elementFound == null) {
+                    list.add(
+                        ImageItem(
+                            url = imgUrl
+                        )
+                    )
+                }
             }
+
             if (list.isEmpty()) return@withContext Error.NoData
             localDataSource.saveImageList(list)
         } catch (e: Exception){

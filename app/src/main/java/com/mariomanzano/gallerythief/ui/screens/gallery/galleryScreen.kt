@@ -5,6 +5,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -18,10 +19,14 @@ fun GalleryScreen(
 ) {
     val state by viewModel.state.collectAsState()
 
+    LaunchedEffect(true) {
+        viewModel.launchTheRobbery()
+    }
+
     ItemsListScreen(
         loading = state.loading,
         items = state.pictures,
-        onRefresh = { viewModel.launchUpdate() },
+        onRefresh = { viewModel.launchTheRobbery() },
         error = state.error,
         listState = listState,
     )

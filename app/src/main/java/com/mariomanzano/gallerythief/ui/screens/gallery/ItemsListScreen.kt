@@ -36,7 +36,6 @@ fun ItemsListScreen(
             GalleryItemsList(
                 loading = loading,
                 items = items,
-                onRefresh = onRefresh,
                 listState = listState
             )
     }
@@ -48,7 +47,6 @@ fun ItemsListScreen(
 fun GalleryItemsList(
     loading: Boolean,
     items: List<ImageItem>?,
-    onRefresh: (() -> Unit)?,
     listState: LazyListState,
     modifier: Modifier = Modifier
 ) {
@@ -63,22 +61,16 @@ fun GalleryItemsList(
 
         items?.let { list ->
             if (list.isNotEmpty()) {
-                SwipeRefresh(
-                    state = rememberSwipeRefreshState(loading),
-                    onRefresh = { onRefresh?.invoke() },
-                    swipeEnabled = onRefresh != null
+                LazyVerticalGrid(
+                    state = listState,
+                    cells = GridCells.Adaptive(180.dp),
+                    contentPadding = PaddingValues(4.dp)
                 ) {
-                    LazyVerticalGrid(
-                        state = listState,
-                        cells = GridCells.Adaptive(180.dp),
-                        contentPadding = PaddingValues(4.dp)
-                    ) {
 
-                        items(list) {
-                            ImageListItem(
-                                item = it
-                            )
-                        }
+                    items(list) {
+                        ImageListItem(
+                            item = it
+                        )
                     }
                 }
             }

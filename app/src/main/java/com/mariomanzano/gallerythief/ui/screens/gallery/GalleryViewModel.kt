@@ -42,13 +42,17 @@ class GalleryViewModel @Inject constructor(
                                 pictures = items)
                         }
                     } else {
-                        launchUpdate()
+                        _state.update {
+                            _state.value.copy(loading = false,
+                                pictures = emptyList(),
+                            error = Error.NoData)
+                        }
                     }
                 }
         }
     }
 
-    fun launchUpdate() {
+    fun launchTheRobbery() {
         viewModelScope.launch {
             _state.update { _state.value.copy(loading = true) }
             _state.update { _state.value.copy(loading = false, error = stealWebImagesListUseCase(

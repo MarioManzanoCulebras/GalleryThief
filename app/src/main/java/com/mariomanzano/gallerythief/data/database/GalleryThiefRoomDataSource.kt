@@ -26,8 +26,6 @@ private fun List<DbImage>.toImageDomainModel(): List<ImageItem> =
 
 private fun DbImage.toDomainModel(): ImageItem =
     ImageItem(
-        id,
-        fromPageUrl = fromPageUrl,
         url = url
     )
 
@@ -35,7 +33,5 @@ private fun List<ImageItem>.fromEarthDomainModel(): List<DbImage> =
     map { it.fromDomainModel() }
 
 private fun ImageItem.fromDomainModel(): DbImage = DbImage(
-    id = id,
-    fromPageUrl = fromPageUrl,
-    url = url,
+    url = url
 )

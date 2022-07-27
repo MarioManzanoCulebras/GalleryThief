@@ -11,9 +11,9 @@ interface GalleryThiefDao {
     @Query("SELECT * FROM DbImage")
     fun getAllImages(): Flow<List<DbImage>>
 
-    @Query("SELECT COUNT(id) FROM DbImage")
+    @Query("SELECT COUNT(url) FROM DbImage")
     suspend fun getImagesCount(): Int
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insertImagesOnDb(items: List<DbImage>)
 }
