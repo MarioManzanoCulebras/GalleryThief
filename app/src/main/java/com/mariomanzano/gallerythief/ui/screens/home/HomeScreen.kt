@@ -1,8 +1,10 @@
 package com.mariomanzano.gallerythief.ui.screens.home
 
+import android.graphics.Bitmap
 import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -16,9 +18,11 @@ import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.runtime.*
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -41,24 +45,28 @@ import com.mariomanzano.gallerythief.ui.screens.common.ThiefIcon
 @Composable
 fun HomeScreen(appState: GalleryThiefAppState) {
     val url = remember { mutableStateOf("") }
+    val enableDownloadButton = remember { mutableStateOf(false) }
 
     Scaffold(
         scaffoldState = appState.scaffoldState,
         floatingActionButton = {
-            Row {
-                Spacer(modifier = Modifier.weight(1f))
-                FloatingActionButton(onClick = {
-                    appState.navController.navigatePoppingUpToStartDestination(
-                    NavCommand.ContentTypeByString(Feature.GALLERY)
-                        .createRoute(url.value.ifEmpty { "jsoup.org" })
-                )}) {
-                    Image(
-                        painter = painterResource(ThiefIcon.ThiefGallery.resourceId),
-                        contentDescription = "Gallery",
-                        colorFilter = ColorFilter.tint(Color.White)
-                    )
+            if (enableDownloadButton.value) {
+                Row {
+                    Spacer(modifier = Modifier.weight(1f))
+                    FloatingActionButton(onClick = {
+                        appState.navController.navigatePoppingUpToStartDestination(
+                            NavCommand.ContentTypeByString(Feature.GALLERY)
+                                .createRoute(url.value.ifEmpty { "jsoup.org" })
+                        )
+                    }) {
+                        Image(
+                            painter = painterResource(ThiefIcon.ThiefGallery.resourceId),
+                            contentDescription = "Gallery",
+                            colorFilter = ColorFilter.tint(Color.White)
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(12.dp))
                 }
-                Spacer(modifier = Modifier.width(12.dp))
             }
         }) {
 
@@ -69,14 +77,13 @@ fun HomeScreen(appState: GalleryThiefAppState) {
                 onSearch = {
                     url.value = it
                 },
-                onTextChange ={
-                    url.value = it.text
-                }
+                onTextChange ={}
             )
 
             WebView(
                 modifier = Modifier.weight(1f),
-                url = url.value)
+                url = url.value,
+                enableDownloadButton)
         }
     }
 }
@@ -117,21 +124,47 @@ fun SearchTextField(value: TextFieldValue,
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun WebView(modifier: Modifier, url: String) {
+fun WebView(modifier: Modifier, url: String, enableDownloadButton : MutableState<Boolean>) {
+
+    var backEnabled by remember { mutableStateOf(false) }
+    var webView: WebView? = null
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     AndroidView(
         modifier = modifier,
-        factory = {
-        WebView(it).apply {
-            layoutParams = ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-            )
-            webViewClient = WebViewClient()
-            loadUrl(url)
-        }
-    }, update = {
-        it.loadUrl(url)
-    })
+        factory = { context ->
+            WebView(context).apply {
+                layoutParams = ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT
+                )
+                webViewClient = object : WebViewClient() {
+                    override fun onPageFinished(view: WebView?, url: String?) {
+                        if (url != "about:blank") {
+                            keyboardController?.hide()
+                            enableDownloadButton.value = true
+                        }
+                        super.onPageFinished(view, url)
+                    }
+
+                    override fun onPageStarted(view: WebView, url: String?, favicon: Bitmap?) {
+                        backEnabled = view.canGoBack()
+                    }
+                }
+                settings.javaScriptEnabled = true
+
+                loadUrl(url)
+                webView = this
+            }
+        }, update = {
+            webView = it
+            it.loadUrl(url)
+        })
+
+    BackHandler(enabled = backEnabled) {
+        webView?.goBack()
+    }
 
 }
