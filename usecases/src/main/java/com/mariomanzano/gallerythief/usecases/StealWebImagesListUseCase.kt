@@ -1,4 +1,4 @@
-package com.mariomanzano.nasaexplorer.usecases
+package com.mariomanzano.gallerythief.usecases
 
 import com.mariomanzano.gallerythief.repositories.GalleryThiefRepository
 import javax.inject.Inject
