@@ -8,6 +8,8 @@ plugins {
 dependencies {
     implementation project(":domain")
 
+    implementation Libs.Jsoup.jsoup
+
     implementation Libs.Kotlin.Coroutines.core
     implementation Libs.Arrow.core
 

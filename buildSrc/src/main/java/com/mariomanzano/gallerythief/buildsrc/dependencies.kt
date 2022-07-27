@@ -82,6 +82,11 @@ object Libs {
         }
     }
 
+    object Jsoup {
+        private const val version = "1.11.3"
+        const val jsoup = "org.jsoup:jsoup:$version"
+    }
+
     object Glide {
         private const val version = "1.5.1"
         const val glide = "com.github.skydoves:landscapist-glide:$version"

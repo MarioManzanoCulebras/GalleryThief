@@ -39,9 +39,10 @@ class GalleryViewModel @Inject constructor(
                     if (items.isNotEmpty()) {
                         _state.update {
                             _state.value.copy(loading = false,
-                                //Todo: fake list
-                                pictures = emptyList())
+                                pictures = items)
                         }
+                    } else {
+                        launchUpdate()
                     }
                 }
         }
@@ -50,7 +51,6 @@ class GalleryViewModel @Inject constructor(
     fun launchUpdate() {
         viewModelScope.launch {
             _state.update { _state.value.copy(loading = true) }
-            delay(1000)
             _state.update { _state.value.copy(loading = false, error = stealWebImagesListUseCase(
                 savedStateHandle.get<String>(NavArg.ItemType.key) ?: "")) }
         }

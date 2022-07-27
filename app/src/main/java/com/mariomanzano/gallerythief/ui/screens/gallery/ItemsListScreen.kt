@@ -1,4 +1,4 @@
-package com.mariomanzano.gallerythief.ui.screens.common
+package com.mariomanzano.gallerythief.ui.screens.gallery
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
@@ -18,6 +18,7 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.mariomanzano.domain.Error
 import com.mariomanzano.domain.entities.ImageItem
+import com.mariomanzano.gallerythief.ui.screens.common.ErrorMessage
 
 @ExperimentalMaterialApi
 @ExperimentalFoundationApi

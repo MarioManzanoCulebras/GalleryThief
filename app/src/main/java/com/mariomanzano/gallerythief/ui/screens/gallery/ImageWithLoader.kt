@@ -1,4 +1,4 @@
-package com.mariomanzano.gallerythief.ui.screens.common
+package com.mariomanzano.gallerythief.ui.screens.gallery
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -13,13 +13,14 @@ import androidx.compose.ui.text.style.TextAlign
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.placeholder
 import com.google.accompanist.placeholder.shimmer
+import com.mariomanzano.gallerythief.ui.screens.common.ThiefIcon
 import com.skydoves.landscapist.glide.GlideImage
 
 
 @Composable
 fun ImageWithLoader(
     urlImage: String?,
-    contentScale: ContentScale = ContentScale.Crop,
+    contentScale: ContentScale = ContentScale.Fit,
     contentDescription: String? = null
 ) {
     GlideImage(

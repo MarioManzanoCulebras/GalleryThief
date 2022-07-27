@@ -50,7 +50,7 @@ fun HomeScreen(appState: GalleryThiefAppState) {
                 FloatingActionButton(onClick = {
                     appState.navController.navigatePoppingUpToStartDestination(
                     NavCommand.ContentTypeByString(Feature.GALLERY)
-                        .createRoute(url.value.ifEmpty { "EmptyUrl" })
+                        .createRoute(url.value.ifEmpty { "jsoup.org" })
                 )}) {
                     Image(
                         painter = painterResource(ThiefIcon.ThiefGallery.resourceId),
@@ -68,9 +68,10 @@ fun HomeScreen(appState: GalleryThiefAppState) {
                 modifier = Modifier.padding(top = 36.dp),
                 onSearch = {
                     url.value = it
-                    //Todo: Search with viewModel
                 },
-                onTextChange ={}
+                onTextChange ={
+                    url.value = it.text
+                }
             )
 
             WebView(

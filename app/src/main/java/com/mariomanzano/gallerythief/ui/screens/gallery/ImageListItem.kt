@@ -1,4 +1,4 @@
-package com.mariomanzano.gallerythief.ui.screens.common
+package com.mariomanzano.gallerythief.ui.screens.gallery
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.mariomanzano.domain.entities.ImageItem
+import com.mariomanzano.gallerythief.ui.screens.gallery.ImageWithLoader
 
 @Composable
 fun ImageListItem(

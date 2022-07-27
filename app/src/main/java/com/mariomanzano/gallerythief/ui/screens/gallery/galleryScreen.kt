@@ -8,8 +8,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.mariomanzano.domain.entities.ImageItem
-import com.mariomanzano.gallerythief.ui.screens.common.ItemsListScreen
 
 @ExperimentalMaterialApi
 @ExperimentalFoundationApi
