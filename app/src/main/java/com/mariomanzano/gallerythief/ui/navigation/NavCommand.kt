@@ -9,15 +9,13 @@ sealed class NavCommand(
 ) {
     class ContentType(feature: Feature) : NavCommand(feature)
 
-    class ContentTypeDetailById(feature: Feature) :
-        NavCommand(feature, "detail", listOf(NavArg.ItemId)) {
-        fun createRoute(itemId: Int) = "${feature.route}/$subRoute/$itemId"
-    }
-
-    class ContentTypeDetailByIdAndType(feature: Feature) :
-        NavCommand(feature, "favoriteDetail", listOf(NavArg.ItemId, NavArg.ItemType)) {
-        fun createRoute(itemId: Int, itemType: String) =
-            "${feature.route}/$subRoute/$itemId/$itemType"
+    class ContentTypeByString(feature: Feature) :
+        NavCommand(
+            feature = feature,
+            "gallery",
+            navArgs = listOf(NavArg.ItemType)
+        ) {
+        fun createRoute(itemType: String) = "${feature.route}/$subRoute/$itemType"
     }
 
     val route = run {

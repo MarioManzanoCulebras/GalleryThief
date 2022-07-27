@@ -9,7 +9,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.mariomanzano.gallerythief.ui.GalleryThiefAppState
-import com.mariomanzano.gallerythief.ui.screens.HomeScreen
+import com.mariomanzano.gallerythief.ui.screens.home.HomeScreen
+import com.mariomanzano.gallerythief.ui.screens.gallery.GalleryScreen
 
 @ExperimentalPagerApi
 @ExperimentalMaterialApi
@@ -23,13 +24,11 @@ fun Navigation(appState: GalleryThiefAppState) {
         composable(NavCommand.ContentType(Feature.HOME)) {
             HomeScreen(appState = appState)
         }
-        composable(NavCommand.ContentType(Feature.GALLERY)) {
-
+        composable(NavCommand.ContentTypeByString(Feature.GALLERY)) {
+            GalleryScreen()
         }
     }
 }
-
-
 
 private fun NavGraphBuilder.composable(
     navCommand: NavCommand,
