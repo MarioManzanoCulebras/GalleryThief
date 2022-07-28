@@ -5,4 +5,5 @@ import com.mariomanzano.gallerythief.R
 sealed class ThiefIcon(val resourceId: Int) {
     object ThiefAngry : ThiefIcon(R.drawable.ic_thief_angry)
     object ThiefGallery : ThiefIcon(R.drawable.ic_thief_gallery)
+    object ThiefDownload : ThiefIcon(R.drawable.ic_thief_download)
 }

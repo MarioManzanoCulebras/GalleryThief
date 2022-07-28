@@ -1,10 +1,12 @@
 package com.mariomanzano.gallerythief.ui.screens.home
 
+import android.content.res.Resources
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -19,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -30,6 +33,7 @@ import androidx.compose.ui.unit.sp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.web.*
 import com.mariomanzano.domain.Error
+import com.mariomanzano.gallerythief.R
 import com.mariomanzano.gallerythief.ui.GalleryThiefAppState
 import com.mariomanzano.gallerythief.ui.navigation.Feature
 import com.mariomanzano.gallerythief.ui.navigation.NavCommand
@@ -57,8 +61,8 @@ fun HomeScreen(appState: GalleryThiefAppState) {
                             NavCommand.ContentTypeByString(Feature.GALLERY).createRoute(" ")
                         )
                     }) {
-                        Icon(
-                            imageVector = Icons.Default.FolderOpen,
+                        Image(
+                            painter = painterResource(ThiefIcon.ThiefGallery.resourceId),
                             contentDescription = "Gallery"
                         )
                     }
@@ -71,9 +75,8 @@ fun HomeScreen(appState: GalleryThiefAppState) {
                             )
                         }) {
                             Image(
-                                painter = painterResource(ThiefIcon.ThiefGallery.resourceId),
-                                contentDescription = "ThiefImages",
-                                colorFilter = ColorFilter.tint(Color.Black)
+                                painter = painterResource(ThiefIcon.ThiefDownload.resourceId),
+                                contentDescription = "ThiefImages"
                             )
                         }
                         Spacer(modifier = Modifier.width(24.dp))
@@ -122,7 +125,9 @@ fun SearchTextField(value: TextFieldValue,
                     onTextChange(text)
                 }
             },
-            leadingIcon = { Icon(imageVector = Icons.Default.Search, contentDescription = "TrailingIcon") },
+            leadingIcon = { Image(painterResource(
+                id = R.drawable.ic_thief_search),
+                contentDescription = "SearchIcon") },
             singleLine = true,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text,
@@ -181,7 +186,7 @@ fun WebView(modifier: Modifier, url: MutableState<String>, enableDownloadButton 
 
         WebView(
             state = webViewState,
-            modifier = modifier,
+            modifier = modifier.background(colorResource(id = R.color.orangeBackground)),
             navigator = navigatorWebView,
             onCreated = { webView ->
                 webView.settings.javaScriptEnabled = true
