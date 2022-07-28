@@ -20,7 +20,7 @@ import com.skydoves.landscapist.glide.GlideImage
 @Composable
 fun ImageWithLoader(
     urlImage: String?,
-    contentScale: ContentScale = ContentScale.Fit,
+    contentScale: ContentScale = ContentScale.Crop,
     contentDescription: String? = null
 ) {
     GlideImage(

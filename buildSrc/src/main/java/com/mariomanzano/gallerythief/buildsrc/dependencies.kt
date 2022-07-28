@@ -8,7 +8,7 @@ object Libs {
     const val gradleVersionsPlugin = "com.github.ben-manes:gradle-versions-plugin:0.42.0"
 
     object Kotlin {
-        private const val version = "1.6.10"
+        private const val version = "1.7.0"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
 
         object Coroutines {
@@ -40,7 +40,7 @@ object Libs {
         }
 
         object Room {
-            private const val version = "2.4.2"
+            private const val version = "2.5.0-alpha02"
             const val runtime = "androidx.room:room-runtime:$version"
             const val ktx = "androidx.room:room-ktx:$version"
             const val compiler = "androidx.room:room-compiler:$version"
@@ -64,10 +64,10 @@ object Libs {
 
         object Compose {
             const val liveData = "androidx.compose.runtime:runtime-livedata:1.2.0-alpha08"
-            const val navigation = "androidx.navigation:navigation-compose:2.4.2"
+            const val navigation = "androidx.navigation:navigation-compose:2.5.0"
             const val activity = "androidx.activity:activity-compose:1.4.0"
 
-            const val version = "1.1.1"
+            const val version = "1.2.0"
             const val ui = "androidx.compose.ui:ui:$version"
             const val material = "androidx.compose.material:material:$version"
             const val tooling = "androidx.compose.ui:ui-tooling-preview:$version"
@@ -112,7 +112,7 @@ object Libs {
     object Hilt {
         const val navigationCompose = "androidx.hilt:hilt-navigation-compose:1.0.0"
 
-        private const val version = "2.41"
+        private const val version = "2.43"
         const val android = "com.google.dagger:hilt-android:$version"
         const val compiler = "com.google.dagger:hilt-compiler:$version"
         const val gradlePlugin = "com.google.dagger:hilt-android-gradle-plugin:$version"
@@ -141,12 +141,13 @@ object Libs {
     }
 
     object Accompanist {
-        private const val version = "0.22.1-rc"
+        private const val version = "0.24.13-rc"
         const val pager = "com.google.accompanist:accompanist-pager:$version"
         const val indicators = "com.google.accompanist:accompanist-pager-indicators:$version"
         const val systemUiController =
             "com.google.accompanist:accompanist-systemuicontroller:$version"
         const val swipeRefresh = "com.google.accompanist:accompanist-swiperefresh:$version"
         const val placeHolder = "com.google.accompanist:accompanist-placeholder:$version"
+        const val webView = "com.google.accompanist:accompanist-webview:$version"
     }
 }

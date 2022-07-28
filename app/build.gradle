@@ -77,6 +77,7 @@ dependencies {
     implementation Libs.Accompanist.systemUiController
     implementation Libs.Accompanist.swipeRefresh
     implementation Libs.Accompanist.placeHolder
+    implementation Libs.Accompanist.webView
 
     implementation Libs.Hilt.android
     kapt Libs.Hilt.compiler

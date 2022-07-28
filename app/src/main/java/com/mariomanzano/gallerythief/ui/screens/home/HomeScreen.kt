@@ -1,10 +1,8 @@
 package com.mariomanzano.gallerythief.ui.screens.home
 
-import android.graphics.Bitmap
-import android.view.ViewGroup
+import android.webkit.WebResourceError
+import android.webkit.WebResourceRequest
 import android.webkit.WebView
-import android.webkit.WebViewClient
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -13,7 +11,8 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.FolderOpen
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -28,13 +27,15 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.viewinterop.AndroidView
 import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.web.*
+import com.mariomanzano.domain.Error
 import com.mariomanzano.gallerythief.ui.GalleryThiefAppState
 import com.mariomanzano.gallerythief.ui.navigation.Feature
 import com.mariomanzano.gallerythief.ui.navigation.NavCommand
-import com.mariomanzano.gallerythief.ui.navigation.navigatePoppingUpToStartDestination
+import com.mariomanzano.gallerythief.ui.screens.common.ErrorMessage
 import com.mariomanzano.gallerythief.ui.screens.common.ThiefIcon
+
 
 @ExperimentalPagerApi
 @ExperimentalMaterialApi
@@ -43,6 +44,7 @@ import com.mariomanzano.gallerythief.ui.screens.common.ThiefIcon
 fun HomeScreen(appState: GalleryThiefAppState) {
     val url = remember { mutableStateOf("") }
     val enableDownloadButton = remember { mutableStateOf(false) }
+    val errorWebView = remember { mutableStateOf("")}
 
     Scaffold(
         scaffoldState = appState.scaffoldState,
@@ -77,13 +79,16 @@ fun HomeScreen(appState: GalleryThiefAppState) {
                         Spacer(modifier = Modifier.width(24.dp))
                     }
             }
-        }) {
+        }) { paddingValues ->
 
-        Column {
+        Column(
+            modifier = Modifier.padding(paddingValues)
+        ) {
             SearchTextField(
                 value = TextFieldValue(url.value),
                 modifier = Modifier.padding(top = 36.dp),
                 onSearch = {
+                    errorWebView.value = ""
                     url.value = it
                 },
                 onTextChange ={}
@@ -91,8 +96,9 @@ fun HomeScreen(appState: GalleryThiefAppState) {
 
             WebView(
                 modifier = Modifier.weight(1f),
-                url = url.value,
-                enableDownloadButton)
+                url = url,
+                enableDownloadButton = enableDownloadButton,
+                errorWebView = errorWebView)
         }
     }
 }
@@ -135,45 +141,53 @@ fun SearchTextField(value: TextFieldValue,
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun WebView(modifier: Modifier, url: String, enableDownloadButton : MutableState<Boolean>) {
-
-    var backEnabled by remember { mutableStateOf(false) }
-    var webView: WebView? = null
+fun WebView(modifier: Modifier, url: MutableState<String>, enableDownloadButton : MutableState<Boolean>, errorWebView: MutableState<String>) {
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    AndroidView(
-        modifier = modifier,
-        factory = { context ->
-            WebView(context).apply {
-                layoutParams = ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT
-                )
-                webViewClient = object : WebViewClient() {
-                    override fun onPageFinished(view: WebView?, url: String?) {
-                        if (url != "about:blank") {
-                            keyboardController?.hide()
-                            enableDownloadButton.value = true
-                        }
-                        super.onPageFinished(view, url)
-                    }
+    val webViewState = rememberWebViewState(url = url.value)
+    val navigatorWebView = rememberWebViewNavigator()
 
-                    override fun onPageStarted(view: WebView, url: String?, favicon: Bitmap?) {
-                        backEnabled = view.canGoBack()
-                    }
+    val loadingState = webViewState.loadingState
+
+    if (loadingState is LoadingState.Loading) {
+        LinearProgressIndicator(
+            progress = loadingState.progress,
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+    if (errorWebView.value.isNotEmpty()){
+        ErrorMessage(error = Error.Unknown(errorWebView.value), onClickRetry = {
+            errorWebView.value = ""})
+    } else {
+        val webClient = remember {
+            object : AccompanistWebViewClient() {
+                override fun onReceivedError(
+                    view: WebView?,
+                    request: WebResourceRequest?,
+                    error: WebResourceError?
+                ) {
+                    enableDownloadButton.value = false
+                    errorWebView.value = error?.description.toString()
+                    super.onReceivedError(view, request, error)
                 }
-                settings.javaScriptEnabled = true
 
-                loadUrl(url)
-                webView = this
+                override fun onPageFinished(view: WebView?, url: String?) {
+                    super.onPageFinished(view, url)
+                    keyboardController?.hide()
+                    enableDownloadButton.value = true
+                }
             }
-        }, update = {
-            webView = it
-            it.loadUrl(url)
-        })
+        }
 
-    BackHandler(enabled = backEnabled) {
-        webView?.goBack()
+        WebView(
+            state = webViewState,
+            modifier = modifier,
+            navigator = navigatorWebView,
+            onCreated = { webView ->
+                webView.settings.javaScriptEnabled = true
+            },
+            client = webClient
+        )
     }
 
 }

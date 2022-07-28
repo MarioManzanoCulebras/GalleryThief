@@ -2,6 +2,8 @@ package com.mariomanzano.gallerythief.ui.screens.gallery
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.grid.LazyGridState
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
@@ -14,7 +16,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 @ExperimentalFoundationApi
 @Composable
 fun GalleryScreen(
-    listState: LazyListState = rememberLazyListState(),
+    listState: LazyGridState = rememberLazyGridState(),
     viewModel: GalleryViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
