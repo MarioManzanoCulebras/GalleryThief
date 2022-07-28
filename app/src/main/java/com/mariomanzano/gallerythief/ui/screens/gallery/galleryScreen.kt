@@ -9,11 +9,15 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.mariomanzano.gallerythief.ui.GalleryThiefAppState
 
+@ExperimentalPagerApi
 @ExperimentalMaterialApi
 @ExperimentalFoundationApi
 @Composable
 fun GalleryScreen(
+    appState: GalleryThiefAppState,
     listState: LazyGridState = rememberLazyGridState(),
     viewModel: GalleryViewModel = hiltViewModel()
 ) {
@@ -24,6 +28,7 @@ fun GalleryScreen(
     }
 
     ItemsListScreen(
+        appState = appState,
         loading = state.loading,
         items = state.pictures,
         onRefresh = { viewModel.launchTheRobbery() },

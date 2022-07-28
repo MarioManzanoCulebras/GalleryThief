@@ -25,7 +25,7 @@ fun Navigation(appState: GalleryThiefAppState) {
             HomeScreen(appState = appState)
         }
         composable(NavCommand.ContentTypeByString(Feature.GALLERY)) {
-            GalleryScreen()
+            GalleryScreen(appState = appState)
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.mariomanzano.gallerythief.ui.screens.gallery
 
+import android.content.Context
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
@@ -16,9 +17,10 @@ import com.mariomanzano.gallerythief.R.*
 
 @Composable
 fun ItemBottomPreview(
+    context: Context,
     item: ImageItem?,
-    onStoreOnSD: ((ImageItem) -> Unit)? = null,
-    onStoreOnGallery: ((ImageItem) -> Unit)? = null
+    onStoreOnSD: ((ImageItem, Context) -> Unit)? = null,
+    onStoreOnGallery: ((ImageItem, Context) -> Unit)? = null
 ) {
     if (item != null) {
         Column(
@@ -43,7 +45,7 @@ fun ItemBottomPreview(
             Row(modifier = Modifier.fillMaxWidth()) {
                 if (onStoreOnSD != null) {
                     Button(
-                        onClick = { onStoreOnSD(item) }
+                        onClick = { onStoreOnSD(item, context) }
                     ) {
                         Text(text = stringResource(id = string.store_on_sd_card))
                     }
@@ -51,7 +53,7 @@ fun ItemBottomPreview(
                 Spacer(modifier = Modifier.weight(1f))
                 if (onStoreOnGallery != null) {
                     Button(
-                        onClick = { onStoreOnGallery(item) }
+                        onClick = { onStoreOnGallery(item, context) }
                     ) {
                         Text(text = stringResource(id = string.store_on_gallery))
                     }

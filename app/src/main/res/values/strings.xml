@@ -3,4 +3,6 @@
     <string name="store_on_sd_card">Store on SD Card</string>
     <string name="store_on_gallery">Store on Gallery</string>
     <string name="storing_info">You can chose where to store this image. When you click the image will be on the location requested and the item will be marked as downloaded</string>
+    <string name="gallery_storing_message">Gallery storing not implemented</string>
+    <string name="location_image_stored_info">Image Stored in folder …/ImagesFromGalleryThief</string>
 </resources>

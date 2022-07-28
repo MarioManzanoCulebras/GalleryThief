@@ -1,7 +1,17 @@
 package com.mariomanzano.gallerythief.ui.screens.gallery
 
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,16 +23,22 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
+import com.google.accompanist.pager.ExperimentalPagerApi
 import com.mariomanzano.domain.Error
 import com.mariomanzano.domain.entities.ImageItem
+import com.mariomanzano.gallerythief.ui.GalleryThiefAppState
 import com.mariomanzano.gallerythief.ui.screens.common.ErrorMessage
 import kotlinx.coroutines.launch
 
+@ExperimentalPagerApi
 @ExperimentalMaterialApi
 @ExperimentalFoundationApi
 @Composable
 fun ItemsListScreen(
+    appState: GalleryThiefAppState,
     loading: Boolean = false,
     items: List<ImageItem>?,
     onRefresh: (() -> Unit)? = null,
@@ -39,6 +55,18 @@ fun ItemsListScreen(
         val sheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
         val scope = rememberCoroutineScope()
 
+        val context = LocalContext.current
+
+        val launcher = rememberLauncherForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+               Toast.makeText(context.applicationContext, "Permission Granted, you can now click again to store it", Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(context.applicationContext, "Permission Denied, you have to granted it to make this action", Toast.LENGTH_LONG).show()
+            }
+        }
+
         BackHandler(sheetState.isVisible) {
             scope.launch { sheetState.hide() }
         }
@@ -46,15 +74,33 @@ fun ItemsListScreen(
         ModalBottomSheetLayout(
             sheetContent = {
                 ItemBottomPreview(
+                    context = context,
                     item = bottomSheetItem,
-                    onStoreOnSD = {
+                    onStoreOnSD = { image, context ->
                         scope.launch {
                             sheetState.hide()
+
+                            checkPermission(
+                                context,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                image,
+                                appState.onStoreOnSD,
+                                launcher
+                            )
                         }
+
                     },
-                    onStoreOnGallery  = {
+                    onStoreOnGallery  = { image, context ->
                         scope.launch {
                             sheetState.hide()
+
+                            checkPermission(
+                                context,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                image,
+                                appState.onStoreOnGallery,
+                                launcher
+                            )
                         }
                     }
                 )
@@ -72,6 +118,27 @@ fun ItemsListScreen(
                 items = items,
                 listState = listState
             )
+        }
+    }
+}
+
+private fun checkPermission(
+    context: Context,
+    permission: String,
+    item: ImageItem,
+    onStore: ((ImageItem, Context) -> Unit)? = null,
+    launcher: ActivityResultLauncher<String>
+){
+    // Check permission
+    when (PackageManager.PERMISSION_GRANTED) {
+        ContextCompat.checkSelfPermission(
+            context,
+            permission
+        ) -> {
+            onStore?.invoke(item, context)
+        }
+        else -> {
+            launcher.launch(permission)
         }
     }
 }
@@ -113,4 +180,68 @@ fun GalleryItemsList(
             }
         }
     }
+}
+
+@Composable
+fun PermissionCheckerCompose(openDialog: MutableState<Boolean>) {
+    val launcher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            // Permission Accepted: Do something
+            Log.d("ExampleScreen","PERMISSION GRANTED")
+
+        } else {
+            // Permission Denied: Do something
+            Log.d("ExampleScreen","PERMISSION DENIED")
+        }
+    }
+    val context = LocalContext.current
+
+    AlertDialog(
+        onDismissRequest = {
+            // Dismiss the dialog when the user clicks outside the dialog or on the back
+            // button. If you want to disable that functionality, simply use an empty
+            // onCloseRequest.
+            openDialog.value = false
+        },
+        title = {
+            Text(text = "Dialog Title")
+        },
+        text = {
+            Text("Here is a text ")
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    openDialog.value = false
+                    // Check permission
+                    when (PackageManager.PERMISSION_GRANTED) {
+                        ContextCompat.checkSelfPermission(
+                            context,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+                        ) -> {
+                            // Some works that require permission
+                            Log.d("ExampleScreen","Code requires permission")
+                        }
+                        else -> {
+                            // Asking for permission
+                            launcher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        }
+                    }
+                }
+            ) {
+                Text(text = "Check and Request Permission")
+            }
+        },
+        dismissButton = {
+            Button(
+
+                onClick = {
+                    openDialog.value = false
+                }) {
+                Text("This is the dismiss Button")
+            }
+        }
+    )
 }
