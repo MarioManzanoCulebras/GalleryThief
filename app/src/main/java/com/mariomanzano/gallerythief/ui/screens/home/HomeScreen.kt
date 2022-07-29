@@ -164,15 +164,6 @@ fun WebView(modifier: Modifier, textFieldUrl: MutableState<String>, enableDownlo
     } else {
         val webClient = remember {
             object : AccompanistWebViewClient() {
-
-                override fun shouldOverrideUrlLoading(
-                    view: WebView?,
-                    request: WebResourceRequest?
-                ): Boolean {
-                    val i = 0
-                    return super.shouldOverrideUrlLoading(view, request)
-                }
-
                 override fun onReceivedError(
                     view: WebView?,
                     request: WebResourceRequest?,
