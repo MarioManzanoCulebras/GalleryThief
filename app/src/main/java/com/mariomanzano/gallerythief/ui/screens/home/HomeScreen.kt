@@ -1,6 +1,5 @@
 package com.mariomanzano.gallerythief.ui.screens.home
 
-import android.content.res.Resources
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
@@ -12,14 +11,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.FolderOpen
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -39,6 +34,8 @@ import com.mariomanzano.gallerythief.ui.navigation.Feature
 import com.mariomanzano.gallerythief.ui.navigation.NavCommand
 import com.mariomanzano.gallerythief.ui.screens.common.ErrorMessage
 import com.mariomanzano.gallerythief.ui.screens.common.ThiefIcon
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 
 @ExperimentalPagerApi
@@ -69,9 +66,10 @@ fun HomeScreen(appState: GalleryThiefAppState) {
                     Spacer(modifier = Modifier.weight(1f))
                     if (enableDownloadButton.value) {
                         FloatingActionButton(onClick = {
+                            val encodedUrl = URLEncoder.encode(url.value, StandardCharsets.UTF_8.toString())
                             appState.navController.navigate(
                                 NavCommand.ContentTypeByString(Feature.GALLERY)
-                                    .createRoute(url.value.ifEmpty { "jsoup.org" })
+                                    .createRoute(encodedUrl.ifEmpty { "jsoup.org" })
                             )
                         }) {
                             Image(
@@ -99,7 +97,7 @@ fun HomeScreen(appState: GalleryThiefAppState) {
 
             WebView(
                 modifier = Modifier.weight(1f),
-                url = url,
+                textFieldUrl = url,
                 enableDownloadButton = enableDownloadButton,
                 errorWebView = errorWebView)
         }
@@ -146,10 +144,10 @@ fun SearchTextField(value: TextFieldValue,
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun WebView(modifier: Modifier, url: MutableState<String>, enableDownloadButton : MutableState<Boolean>, errorWebView: MutableState<String>) {
+fun WebView(modifier: Modifier, textFieldUrl: MutableState<String>, enableDownloadButton : MutableState<Boolean>, errorWebView: MutableState<String>) {
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    val webViewState = rememberWebViewState(url = url.value)
+    val webViewState = rememberWebViewState(url = textFieldUrl.value)
     val navigatorWebView = rememberWebViewNavigator()
 
     val loadingState = webViewState.loadingState
@@ -166,6 +164,15 @@ fun WebView(modifier: Modifier, url: MutableState<String>, enableDownloadButton 
     } else {
         val webClient = remember {
             object : AccompanistWebViewClient() {
+
+                override fun shouldOverrideUrlLoading(
+                    view: WebView?,
+                    request: WebResourceRequest?
+                ): Boolean {
+                    val i = 0
+                    return super.shouldOverrideUrlLoading(view, request)
+                }
+
                 override fun onReceivedError(
                     view: WebView?,
                     request: WebResourceRequest?,
@@ -190,6 +197,7 @@ fun WebView(modifier: Modifier, url: MutableState<String>, enableDownloadButton 
             navigator = navigatorWebView,
             onCreated = { webView ->
                 webView.settings.javaScriptEnabled = true
+                webView.settings.loadWithOverviewMode = true
             },
             client = webClient
         )

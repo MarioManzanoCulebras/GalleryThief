@@ -15,10 +15,9 @@ class GalleryThiefRepository @Inject constructor(
     val imageList = localDataSource.imageList
 
     suspend fun stealWebImagesList(url: String): Error? = withContext(Dispatchers.Default) {
-        val parsedUrl = if (!url.startsWith("http://")) "http://$url" else url
         try {
             val list = mutableListOf<ImageItem>()
-            val doc = Jsoup.connect(parsedUrl).get()
+            val doc = Jsoup.connect(url).get()
             val elements = doc.getElementsByTag("img")
             elements.forEach { img ->
                 val imgUrl = img.absUrl("src")
