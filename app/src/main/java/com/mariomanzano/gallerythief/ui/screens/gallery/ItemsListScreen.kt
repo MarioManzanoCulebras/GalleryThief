@@ -45,7 +45,7 @@ fun ItemsListScreen(
     error: Error? = null,
     listState: LazyGridState,
 ) {
-    if (error != null && !loading && (items == null || items.isEmpty())) {
+    if (error != null && !loading) {
         if (error is Error.NoData ) ErrorMessage(error = error) else ErrorMessage(
             error = error,
             onRefresh

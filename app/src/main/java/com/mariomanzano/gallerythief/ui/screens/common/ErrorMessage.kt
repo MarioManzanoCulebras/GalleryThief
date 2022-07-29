@@ -29,6 +29,7 @@ fun ErrorMessage(
         Error.Connectivity -> "Connectivity Error"
         is Error.Server -> "Server Error: ${error.code}"
         is Error.NoData -> "No Data"
+        is Error.ObtainingHtml -> "Error parsing Html file: ${error.message} - Try to write an url with this format -> http://www..."
         is Error.Unknown -> "Unknown Error: ${error.message}"
     }
 

@@ -36,7 +36,7 @@ class GalleryThiefRepository @Inject constructor(
             if (list.isEmpty()) return@withContext Error.NoData
             localDataSource.saveImageList(list)
         } catch (e: Exception){
-            return@withContext Error.Unknown(e.message?:"Error on parsing Html or Url Malformed")
+            return@withContext Error.ObtainingHtml(e.message?:"Error on parsing Html or Url Malformed")
         }
         return@withContext null
     }
